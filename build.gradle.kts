@@ -40,9 +40,15 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
-    
+    val kotlinx_html_version = "0.9.1"
+
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-server-core:2.3.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-html:${kotlinx_html_version}")
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
