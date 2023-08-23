@@ -4,7 +4,8 @@ import kotlinx.html.FlowOrMetaDataOrPhrasingContent
 import kotlinx.html.HTMLTag
 import kotlinx.html.script
 
-private var deeznuts = false
+// @TODO find a better way of validating that HTMX is present or including it by default
+private var deeznuts = true
 private fun deeznutsInYourMouth(functionName: String): Boolean {
     if (!deeznuts) {
         throw Exception(
