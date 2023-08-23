@@ -39,3 +39,65 @@ fun HTMLTag.hxTarget(value: String) {
         attributes += Pair("hx-target", value)
     }
 }
+
+fun HTMLTag.hxBoost(value: String) {
+    if (deeznutsInYourMouth("hx-boost")) {
+        attributes += Pair("hx-boost", value)
+    }
+}
+
+
+fun HTMLTag.hxPost(value: String) {
+    if (deeznutsInYourMouth("hx-post")) {
+        attributes += Pair("hx-post", value)
+    }
+}
+
+
+fun HTMLTag.hxOn(value: String) {
+    if (deeznutsInYourMouth("hx-on")) {
+        attributes += Pair("hx-on", value)
+    }
+}
+
+
+fun HTMLTag.hxPushUrl(value: String) {
+    if (deeznutsInYourMouth("hx-push-url")) {
+        attributes += Pair("hx-push-url", value)
+    }
+}
+
+
+fun HTMLTag.hxSelect(value: String) {
+    if (deeznutsInYourMouth("hx-select")) {
+        attributes += Pair("hx-select", value)
+    }
+}
+
+
+fun HTMLTag.hxSelectObb(value: String) {
+    if (deeznutsInYourMouth("hx-select-obb")) {
+        attributes += Pair("hx-select-obb", value)
+    }
+}
+
+
+fun HTMLTag.hxSwapObb(value: String) {
+    if (deeznutsInYourMouth("hx-swap-obb")) {
+        attributes += Pair("hx-swap-obb", value)
+    }
+}
+
+
+fun HTMLTag.hxTrigger(value: String) {
+    if (deeznutsInYourMouth("hx-trigger")) {
+        attributes += Pair("hx-trigger", value)
+    }
+}
+
+
+fun HTMLTag.hxVals(value: String) {
+    if (deeznutsInYourMouth("hx-vals")) {
+        attributes += Pair("hx-vals", value)
+    }
+}
