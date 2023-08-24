@@ -1,52 +1,55 @@
+val githubRepo = "adambrangenberg/kotlinLhtmX"
+
 plugins {
-    kotlin("multiplatform") version "1.9.0"
+    kotlin("multiplatform") version "1.8.20"
+    id("maven-publish")
+    id("signing")
 }
 
-group = "de.adamwv"
+group = "de.adamwv.kotlinLhtmX"
 version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
 }
 
+val emptyJar = tasks.register<org.gradle.jvm.tasks.Jar>("emptyJar") {
+    archiveAppendix.set("empty")
+}
+
 kotlin {
     jvm {
-        jvmToolchain(8)
-        withJava()
-        testRuns.named("test") {
-            executionTask.configure {
-                useJUnitPlatform()
+        mavenPublication {
+            groupId = group as String
+            pom {
+                name.set("${project.name}-jvm")
+            }
+
+            artifact(emptyJar) {
+                classifier = "javadoc"
             }
         }
     }
-    js {
-        browser {
-            commonWebpackConfig {
-                cssSupport {
-                    enabled.set(true)
-                }
+    js(IR) {
+        moduleName = project.name
+        browser()
+
+        mavenPublication {
+            groupId = group as String
+            pom {
+                name.set("${project.name}-js")
             }
         }
-    }
-    val hostOs = System.getProperty("os.name")
-    val isArm64 = System.getProperty("os.arch") == "aarch64"
-    val isMingwX64 = hostOs.startsWith("Windows")
-    val nativeTarget = when {
-        hostOs == "Mac OS X" && isArm64 -> macosArm64("native")
-        hostOs == "Mac OS X" && !isArm64 -> macosX64("native")
-        hostOs == "Linux" && isArm64 -> linuxArm64("native")
-        hostOs == "Linux" && !isArm64 -> linuxX64("native")
-        isMingwX64 -> mingwX64("native")
-        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
-    val kotlinx_html_version = "0.9.1"
+    mingwX64()
+    linuxX64()
+    linuxArm64()
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-server-core:2.3.3")
-                implementation("org.jetbrains.kotlinx:kotlinx-html:${kotlinx_html_version}")
+                implementation("org.jetbrains.kotlinx:kotlinx-html:0.9.1")
             }
         }
         val commonTest by getting {
@@ -54,11 +57,56 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        val jvmMain by getting
-        val jvmTest by getting
-        val jsMain by getting
-        val jsTest by getting
-        val nativeMain by getting
-        val nativeTest by getting
+    }
+}
+
+val publishingUser: String? = System.getenv("PUBLISHING_USER")
+val publishingPassword: String? = System.getenv("PUBLISHING_PASSWORD")
+val publishingUrl: String? = System.getenv("PUBLISHING_URL")
+
+publishing {
+    publications {
+        repositories {
+            if (publishingUser == null || publishingUrl == null || publishingPassword == null) return@repositories
+
+            maven {
+                url = uri(publishingUrl)
+                credentials {
+                    username = publishingUser
+                    password = publishingPassword
+                }
+            }
+
+            publications {
+                create<MavenPublication>(project.name) {
+                    this.groupId = groupId
+                    this.artifactId = project.name
+                    this.version = version
+
+                    pom {
+                        description.set(project.description)
+                        url.set("https://github.com/$githubRepo")
+
+                        developers {
+                            developer {
+                                name.set("Adam Brangenberg")
+                            }
+                        }
+
+                        licenses {
+                            license {
+                                name.set("MIT License")
+                                url.set("https://opensource.org/licenses/MIT")
+                            }
+                        }
+
+                        scm {
+                            connection.set("scm:git:git://github.com/${githubRepo}.git")
+                            url.set("https://github.com/${githubRepo}/tree/main")
+                        }
+                    }
+                }
+            }
+        }
     }
 }
