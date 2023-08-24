@@ -1,38 +1,29 @@
 import de.adamwv.kotlinLhtmX.hxGet
 import de.adamwv.kotlinLhtmX.includeHtmx
-import kotlinx.html.body
 import kotlinx.html.div
 import kotlinx.html.head
-import kotlinx.html.html
 import kotlinx.html.stream.createHTML
 import kotlin.test.Test
-import kotlin.test.assertContains
-import kotlin.test.assertFails
+import kotlin.test.assertEquals
 
 class HtmxTests {
-    /*@Test
-    fun includeTest() {
-        assertFails {
-            createHTML().div {
-                hxGet("/joseph")
-            }
-        }
-    }*/
+    private val htmxVersion = "1.9.4"
 
     @Test
     fun hxGetTest() {
-
-        val gen = createHTML().html {
-            head {
-                includeHtmx()
-            }
-            body {
-                div {
-                    hxGet("/joseph")
-                }
-            }
+        val gen = createHTML(false).div {
+            hxGet("/joseph")
         }
 
-        assertContains(gen, "<div hx-get=\"/joseph\"></div>")
+        assertEquals(gen, "<div hx-get=\"/joseph\"></div>")
+    }
+
+    @Test
+    fun includeHtmxTest() {
+        val gen = createHTML(false).head {
+            includeHtmx()
+        }
+
+        assertEquals(gen, "<head><script src=\"https://unpkg.com/htmx.org@$htmxVersion\"></script></head>")
     }
 }
