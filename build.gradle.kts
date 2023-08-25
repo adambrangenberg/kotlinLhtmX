@@ -1,13 +1,13 @@
 val githubRepo = "adambrangenberg/kotlinLhtmX"
-
+val projectName = "kotlinLhtmX"
 plugins {
     kotlin("multiplatform") version "1.8.20"
     id("maven-publish")
     id("signing")
+    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
 }
-
-group = "de.adamwv.kotlinLhtmX"
-version = "1.0-SNAPSHOT"
+group = "de.adamwv"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -64,49 +64,53 @@ val publishingUser: String? = System.getenv("PUBLISHING_USER")
 val publishingPassword: String? = System.getenv("PUBLISHING_PASSWORD")
 val publishingUrl: String? = System.getenv("PUBLISHING_URL")
 
+nexusPublishing {
+    repositories {
+        sonatype {
+            if (publishingUser == null || publishingUrl == null) {
+                //return@sonatype
+            }
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+            username.set(publishingUser)
+            password.set(publishingUrl)
+        }
+    }
+}
+
 publishing {
     publications {
-        repositories {
-            if (publishingUser == null || publishingUrl == null || publishingPassword == null) return@repositories
 
-            maven {
-                url = uri(publishingUrl)
-                credentials {
-                    username = publishingUser
-                    password = publishingPassword
-                }
-            }
+        create<MavenPublication>(project.name) {
+            this.groupId = groupId
+            this.artifactId = project.name
+            this.version = version
 
-            publications {
-                create<MavenPublication>(project.name) {
-                    this.groupId = groupId
-                    this.artifactId = project.name
-                    this.version = version
+            pom {
+                name.set(projectName)
+                description.set(project.description)
+                url.set("https://github.com/$githubRepo")
 
-                    pom {
-                        description.set(project.description)
-                        url.set("https://github.com/$githubRepo")
-
-                        developers {
-                            developer {
-                                name.set("Adam Brangenberg")
-                            }
-                        }
-
-                        licenses {
-                            license {
-                                name.set("MIT License")
-                                url.set("https://opensource.org/licenses/MIT")
-                            }
-                        }
-
-                        scm {
-                            connection.set("scm:git:git://github.com/${githubRepo}.git")
-                            url.set("https://github.com/${githubRepo}/tree/main")
-                        }
+                developers {
+                    developer {
+                        name.set("Adam Brangenberg")
+                        email.set("adambrangenberg@proton.me")
                     }
+                }
+
+                licenses {
+                    license {
+                        name.set("MIT License")
+                        url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
+
+                scm {
+                    connection.set("scm:git:git://github.com/${githubRepo}.git")
+                    url.set("https://github.com/${githubRepo}/tree/main")
                 }
             }
         }
     }
 }
+
