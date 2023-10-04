@@ -42,12 +42,12 @@ fun HTMLTag.hxSelect(value: String) {
     attributes += Pair("hx-select", value)
 }
 
-fun HTMLTag.hxSelectObb(value: String) {
-    attributes += Pair("hx-select-obb", value)
+fun HTMLTag.hxSelectOob(value: String) {
+    attributes += Pair("hx-select-oob", value)
 }
 
-fun HTMLTag.hxSwapObb(value: String) {
-    attributes += Pair("hx-swap-obb", value)
+fun HTMLTag.hxSwapOob(value: String) {
+    attributes += Pair("hx-swap-oob", value)
 }
 
 fun HTMLTag.hxTrigger(value: String) {
